@@ -19,14 +19,6 @@ public class KruchkovTask1 {
 
         vAccount.changeBal(vUsd,2000);
         vAccount.changeBal(vEur,1000);
-/*
-        String vRes = vAccount.printAccCurrCount() ;
-        System.out.println(vRes);
-        System.out.println(vAccount.getName());
-
- */
-
-        // CurrCount vCurrCountXXX = new CurrCount("XXX",1800);
         String vRes = vAccount.printAccCurrCount() ;
         System.out.println("Before save point 1 "+vRes);
         System.out.println(vAccount.getName());
@@ -38,13 +30,9 @@ public class KruchkovTask1 {
         accSavers.saves.put("sp1", vAccSaver);
         System.out.println("Call save point 1");
 
-
-
-
         vRes = vAccount.printAccCurrCount() ;
         System.out.println("After change"+vRes);
         System.out.println(vAccount.getName());
-
 
         vAccount.changeBal(vEur,3000);
         vRes = vAccount.printAccCurrCount() ;
@@ -54,7 +42,6 @@ public class KruchkovTask1 {
 
         accSavers.saves.put("sp2", vAccSaver);
         System.out.println("Call save point 2");
-
 
         vAccount.undo();
         vRes = vAccount.printAccCurrCount() ;
@@ -71,13 +58,11 @@ public class KruchkovTask1 {
         System.out.println("Before restore save points"+vRes);
         System.out.println(vAccount.getName());
 
-
         vAccount.restore(accSavers.saves.get("sp2"));
         System.out.println("Call restore save point 2");
         vRes = vAccount.printAccCurrCount() ;
         System.out.println("After restore save point 2"+vRes);
         System.out.println(vAccount.getName());
-
 
         vAccount.restore(accSavers.saves.get("sp1"));
         System.out.println("Call restore save point 1");
@@ -85,14 +70,5 @@ public class KruchkovTask1 {
         System.out.println("After restore save point 1"+vRes);
         System.out.println(vAccount.getName());
     }
-    /*
-    public static AccSaver save(AccSaver pAcnt, String aSaveName)  {
-        return pAcnt.save(aSaveName);
-    }
-    public  static void restore(AccSaver pAcnt, String aSaveName, ArrayList<AccSaver> accSavers) {
-        pAcnt.restore(aSaveName, accSavers);
-    }
-
-     */
 };
 
