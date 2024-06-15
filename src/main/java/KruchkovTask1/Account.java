@@ -1,7 +1,10 @@
 package KruchkovTask1;
 
-import java.util.*;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
+import java.util.*;
+@ToString @EqualsAndHashCode
 public class Account  {
 
     private String name;

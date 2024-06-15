@@ -1,7 +1,10 @@
 
 package KruchkovTask1;
 
-import org.junit.Test;
+
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
@@ -12,7 +15,7 @@ public class Tests {
     public void accCreate() {
         try {
             Account vAccount = new Account("Иванов Иван Иванович");
-            assert vAccount.getName().equals("Иванов Иван Иванович") : "Account  создается с неверным именем " + vAccount.getName() + " вместо "+"Иванов Иван Иванович";
+            Assertions.assertEquals("Иванов Иван Иванович", vAccount.getName(),"Account  создается с неверным именем " + vAccount.getName() + " вместо "+"Иванов Иван Иванович");
         }
         catch (Exception e)   {
             throw new RuntimeException("Ошибка в тесте или классе : Account  создается с неверным именем "+e.getLocalizedMessage());
@@ -21,15 +24,11 @@ public class Tests {
 // Account метод undo не проверяет, что для отката нет данны
     @Test
     public void AccEmptyCreate()    {
-        boolean thrown = false;
+
         Account vAccount = new Account("Петров Леон");
 
         try {
-            try {
-            vAccount.undo();
-            } catch (IllegalArgumentException e) {thrown = true;}
-            assert thrown : "Account метод undo не проверяет, что для отката нет данных";
-
+                Assertions.assertThrows(IllegalArgumentException.class,() -> vAccount.undo(),  "Account метод undo не проверяет, что для отката нет данных");
         }
         catch (Exception e)   {
                 throw new RuntimeException("Ошибка в тесте или классе : Account метод undo не проверяет, что для отката нет данных "+e.getLocalizedMessage());
@@ -38,17 +37,15 @@ public class Tests {
     // Account on creating don't check for empty or null
     @Test
     public void accNullCreate()    {
-        boolean thrown = false;
+
         try {
-            try {
-                Account vAccount = new Account(null);
-            } catch (IllegalArgumentException err) {thrown = true;}
-            assert thrown : "Account при создании не проверяется null  значение name";
-            thrown = false;
-            try {
-                Account vAccount = new Account("");
-            } catch (IllegalArgumentException err) {thrown = true;}
-            assert thrown : "Account при создании не проверяется пустое значение name";
+
+           Assertions.assertThrows(IllegalArgumentException.class,
+                   () -> {  Account vAccount = new Account(null);} ,
+                   "Account при создании не проверяется null  значение name");
+
+           Assertions.assertThrows(IllegalArgumentException.class,
+                   () -> {Account vAccount = new Account("");}, "Account при создании не проверяется пустое значение name");
         }
         catch (Exception e)   {
             throw new RuntimeException("Ошибка в тесте или классе : Account при создании не проверяется null или пустое значение name "+e.getLocalizedMessage());
@@ -66,8 +63,8 @@ public class Tests {
             vAccount.changeBal(vEur, 1000);
             Map<Currency, Integer> vCurrCount = vAccount.getAccCurrCount();
 
-            assert vCurrCount.get(vUsd) == 2000 : "Не записывается валюта 1 либо количество ";
-            assert vCurrCount.get(vEur) == 1000 : "Не записывается валюта 2 либо количество ";
+            Assertions.assertEquals( 2000, (int) vCurrCount.get(vUsd), "Не записывается валюта 1 либо количество ");
+            Assertions.assertEquals( 1000, (int) vCurrCount.get(vEur) , "Не записывается валюта 2 либо количество ");
         }
         catch (Exception e)   {
                 throw new RuntimeException("Ошибка в тесте или классе : Account Не записывается валюта  либо количество "+e.getLocalizedMessage());
@@ -84,7 +81,7 @@ public class Tests {
             vCurrCount.replace(vUsd, 100);
             vCurrCount = vAccount.getAccCurrCount();
 
-            assert vCurrCount.get(vUsd) == 2000 : "Account Getter  валюты позволяет менять суммы";
+            Assertions.assertEquals(2000, (int) vCurrCount.get(vUsd) , "Account Getter  валюты позволяет менять суммы");
         }
         catch (Exception e)   {
             throw new RuntimeException("Ошибка в тесте или классе : Account Getter  валюты позволяет менять суммы "+e.getLocalizedMessage());
@@ -97,10 +94,9 @@ public class Tests {
         Account vAccount = new Account("Иванов Петр Иванович");
 
         try {
-            try {
-                vAccount.changeBal(null,1000);
-            } catch (IllegalArgumentException err) {thrown = true;}
-            assert thrown : "Account : валюта не проверяется по списку допустимых значений";
+                Assertions.assertThrows(IllegalArgumentException.class,
+                        () -> vAccount.changeBal(null,1000),
+                        "Account : валюта не проверяется по списку допустимых значений");
         }
         catch (Exception e)   {
             throw new RuntimeException("Ошибка в тесте или классе : Account : валюта не проверяется по списку допустимых значений "+e.getLocalizedMessage());
@@ -114,10 +110,9 @@ public class Tests {
         Currency vEur= Currency.getInstance("EUR");
 
         try {
-            try {
-                vAccount.changeBal(vEur,-1000);
-            } catch (IllegalArgumentException err) {thrown = true;}
-            assert thrown : "Account : Количество валюты не проверяется на отрицательное значение";
+                Assertions.assertThrows(IllegalArgumentException.class,
+                        () -> vAccount.changeBal(vEur,-1000),
+                        "Account : Количество валюты не проверяется на отрицательное значение");
         }
         catch (Exception e)   {
             throw new RuntimeException("Ошибка в тесте или классе : Account : Количество валюты не проверяется на отрицательное значение "+e.getLocalizedMessage());
@@ -134,15 +129,15 @@ public class Tests {
         try {
             vAccount.undo();
            Map<Currency, Integer> vCurrCount = vAccount.getAccCurrCount();
-            assert vCurrCount.get(vRur) == 100 : "Error test : метод undo неверно откатывает 1 раз колчество валюты";
-            assert vCurrCount.get(vRur) != null : "Error test : метод undo при откате колчества валюты , валюта удаляется из объекта";
+            Assertions.assertEquals(100, (int)  vCurrCount.get(vRur)  , "Error test : метод undo неверно откатывает 1 раз колчество валюты");
+            Assertions.assertNotEquals( null, vCurrCount.get(vRur) , "Error test : метод undo при откате колчества валюты , валюта удаляется из объекта");
 
             vAccount.undo();
-            assert vAccount.getName().equals("Кузнецов Николай Петрович") : "Error test : метод undo  неверно откатывает наименование";
+            Assertions.assertEquals("Кузнецов Николай Петрович", vAccount.getName(), "Error test : метод undo  неверно откатывает наименование");
 
             vAccount.undo();
             vCurrCount = vAccount.getAccCurrCount();
-            assert vCurrCount.get(vRur) == null : "Error test : метод undo при откате  валюты , валюта не пропадает из объекта ";
+            Assertions.assertEquals(  null , vCurrCount.get(vRur),  "Error test : метод undo при откате  валюты , валюта не пропадает из объекта ");
         }
         catch (Exception e)   {
                 throw new RuntimeException("Ошибка в тесте или классе : Account : Проверка работы undo "+e.getLocalizedMessage());
@@ -175,18 +170,22 @@ public class Tests {
 
             vAccount.setName("Pol Robson");
             vAccount.restore(accSavers.saves.get(aSaveName1));
-            assert  vAccount.getName().equals("Сидоров И.К") : "Error test : метод save  неверно сохраняет наименование";
+            Assertions.assertEquals( "Сидоров И.К" , vAccount.getName(),"Error test : метод save  неверно сохраняет наименование");
 
             Map<Currency, Integer> vCurrCount = vAccount.getAccCurrCount();
-            assert  !(vCurrCount.get(vUsd) == null | vCurrCount.get(vEur) == null ): "Error test : метод save не сохраняет валюту";
-            assert  (vCurrCount.get(vEur) == 1500 && vCurrCount.get(vUsd) == 2000) : "Error test : метод save неверно сохраняет колчество валюты";
+            Assertions.assertNotEquals( null, vCurrCount.get(vUsd)  , "Error test : метод save не сохраняет валюту 1 ");
+            Assertions.assertNotEquals( null, vCurrCount.get(vEur), "Error test : метод save не сохраняет валюту 2 ");
+            Assertions.assertEquals(1500, (int) vCurrCount.get(vEur)  , "Error test : метод save неверно сохраняет колчество валюты");
+            Assertions.assertEquals( 2000, (int) vCurrCount.get(vUsd) , "Error test : метод save неверно сохраняет колчество валюты");
 
             vAccount.restore(accSavers.saves.get(aSaveName2));
-            assert  vAccount.getName().equals("Иван Васильевич") : "Error test : метод save  неверно сохраняет наименование";
+            Assertions.assertEquals("Иван Васильевич" , vAccount.getName(), "Error test : метод save  неверно сохраняет наименование");
 
             vCurrCount = vAccount.getAccCurrCount();
-            assert  (vCurrCount.get(vUsd) != null && vCurrCount.get(vEur) != null ) : "Error test : метод save не сохраняет валюту";
-            assert  (vCurrCount.get(vUsd) == 6000 && vCurrCount.get(vEur) == 3000) : "Error test : метод save неверно сохраняет колчество валюты";
+            Assertions.assertNotEquals(  null , vCurrCount.get(vUsd) , "Error test : метод save не сохраняет валюту");
+            Assertions.assertNotEquals( null,  vCurrCount.get(vEur), "Error test : метод save не сохраняет валюту");
+            Assertions.assertEquals( 6000, (int) vCurrCount.get(vUsd)  , "Error test : метод save неверно сохраняет колчество валюты");
+            Assertions.assertEquals( 3000, (int) vCurrCount.get(vEur), "Error test : метод save неверно сохраняет колчество валюты");
         }
         catch (Exception e)   {
             throw new RuntimeException("Ошибка в тесте или классе : Account : Проверка работы undo "+e.getLocalizedMessage());
@@ -197,14 +196,14 @@ public class Tests {
     // Проверка метода undo при добавлении поля вид счета в класс Account
     // При наличии поля private String acntType  тесты
     @Test
-    public void etendsCheck()   {
+    public void extendsCheck()   {
         class BAccount {
             private String name;
             private final Map<Currency, Integer> accCurrCount= new HashMap<>();
             private String acntType;
 
             BAccount(String vName)  {
-                setName(vName);
+               this.name = vName;
             }
 
             private Deque<Command> saves = new ArrayDeque<>();
@@ -292,18 +291,18 @@ public class Tests {
         // undo begin
         vAccount.undo();
         Map<Currency, Integer> vCurrCount = vAccount.getAccCurrCount();
-        assert  (vCurrCount.get(vRur) == 100) : "Error test : метод undo неверно откатывает 1 раз колчество валюты";
-        assert vCurrCount.get(vRur)!=null : "Error test : метод undo при откате колчества валюты , валюта удаляется из объекта";
+        Assertions.assertEquals(  100, (int) vCurrCount.get(vRur) , "Error test : метод undo неверно откатывает 1 раз колчество валюты");
+        Assertions.assertNotEquals(null , vCurrCount.get(vRur), "Error test : метод undo при откате колчества валюты , валюта удаляется из объекта");
 
         vAccount.undo();
-        assert vAccount.getName().equals("Кузнецов Николай Петрович") : "Error test : метод undo  неверно откатывает наименование";
+        Assertions.assertEquals( "Кузнецов Николай Петрович", vAccount.getName(), "Error test : метод undo  неверно откатывает наименование");
 
         vAccount.undo();
         vCurrCount = vAccount.getAccCurrCount();
-        assert vCurrCount.get(vRur) == null : "Error test : метод undo при откате  валюты , валюта не пропадает из объекта";
+        Assertions.assertEquals(null, vCurrCount.get(vRur), "Error test : метод undo при откате  валюты , валюта не пропадает из объекта");
 
         vAccount.undo();
-        assert vAccount.getAccType() == "Специальный" : "Error test : добавление нового поля в класс требует зменения метода undo";
+        Assertions.assertEquals( "Специальный" , vAccount.getAccType(), "Error test : добавление нового поля в класс требует зменения метода undo");
     }
         catch (Exception e)   {
         throw new RuntimeException("Ошибка в тесте или классе : Проверка метода undo при добавлении поля вид счета в класс Account "+e.getLocalizedMessage());
